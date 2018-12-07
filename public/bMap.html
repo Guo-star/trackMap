@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    *{
+      margin: 0;
+    }
+    html,body{
+      width: 100%;
+      height: 100%;
+    }
+    #container{
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+
+  <script src="./js/jQuery.js"></script>
+  <script src="./js/bus.js"></script>
+  <script src="./js/echarts.js"></script>
+  <!-- <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.js"></script> -->
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+  <script>
+    var myChart = echarts.init(document.getElementById("container"));
+    var option = null;
+
+    var pudong = [
+      [122.029708, 31.144107],
+      [121.943263, 31.176145],
+      [121.898502, 31.210585],
+      [121.864719, 31.252482],
+      [121.821454, 31.292914],
+      [121.781164, 31.318825],
+      [121.680217, 31.368057],
+      [121.573522, 31.417442],
+      [121.556261, 31.421275],
+      [121.512384, 31.385064],
+      [121.509956, 31.372109],
+      [121.51601, 31.361422],
+      [121.557022, 31.343991],
+      [121.567945, 31.332305],
+      [121.568819, 31.304429],
+      [121.574879, 31.282045],
+      [121.567106, 31.272344],
+      [121.545524, 31.256937],
+      [121.536829, 31.253508],
+      [121.513964, 31.252483],
+      [121.500124, 31.2463],
+      [121.500273, 31.241397],
+      [121.511923, 31.230704],
+      [121.516908, 31.221174],
+      [121.504082, 31.200013],
+      [121.484344, 31.194395],
+      [121.472193, 31.186656],
+      [121.471259, 31.180213],
+      [121.476391, 31.16692],
+      [121.463256, 31.15071],
+      [121.476896, 31.130869],
+      [121.471727, 31.117987],
+      [121.478152, 31.116166],
+      [121.480949, 31.120345],
+      [121.483645, 31.115196],
+      [121.488788, 31.116777],
+      [121.484398, 31.123243],
+      [121.496008, 31.130511],
+      [121.498675, 31.123948],
+      [121.505236, 31.127171],
+      [121.508529, 31.120651],
+      [121.517881, 31.126891],
+      [121.521017, 31.120785],
+      [121.53912, 31.124622],
+      [121.544475, 31.119816],
+      [121.549007, 31.122046],
+      [121.552915, 31.116598],
+      [121.561767, 31.120651],
+      [121.565988, 31.117751],
+      [121.566344, 31.111437],
+      [121.573825, 31.100116],
+      [121.558144, 31.096266],
+      [121.554666, 31.092771],
+      [121.557285, 31.087176],
+      [121.567804, 31.090181],
+      [121.582357, 31.086329],
+      [121.56269, 31.079801],
+      [121.559102, 31.075607],
+      [121.561566, 31.072756],
+      [121.553804, 31.067931],
+      [121.552697, 31.053616],
+      [121.560556, 31.056705],
+      [121.568226, 31.050077],
+      [121.565094, 31.047533],
+      [121.564932, 31.030277],
+      [121.559503, 31.030369],
+      [121.557717, 31.026504],
+      [121.562062, 31.024745],
+      [121.566218, 31.029836],
+      [121.57321, 31.027592],
+      [121.577261, 31.032523],
+      [121.579422, 31.030628],
+      [121.58006, 31.02484],
+      [121.576192, 31.018884],
+      [121.571879, 31.018134],
+      [121.576123, 31.016965],
+      [121.577156, 31.004662],
+      [121.601547, 31.008373],
+      [121.618605, 31.007339],
+      [121.627146, 30.998244],
+      [121.673326, 30.998693],
+      [121.710474, 30.989138],
+      [121.725279, 30.982732],
+      [121.748458, 30.965355],
+      [121.752527, 30.957624],
+      [121.776288, 30.946182],
+      [121.787887, 30.922129],
+      [121.783093, 30.88677],
+      [121.77973, 30.886341],
+      [121.774658, 30.869737],
+      [121.777277, 30.813725],
+      [121.795492, 30.710728],
+      [121.920869, 30.740022],
+      [121.978924, 30.766885],
+      [122.007096, 30.776183],
+      [122.022725, 30.824517],
+      [122.005321, 30.819252],
+      [121.993597, 31.048175],
+      [122.029708, 31.144107]
+    ];
+
+    var minX, minY, maxX, maxY;
+
+    computeSum()
+
+    function computeSum() {
+      pudong.forEach(function (item) {
+        if (!minX || item[0] < minX) {
+          minX = item[0];
+        }
+        if (!minY || item[1] < minY) {
+          minY = item[1];
+        }
+        if (!maxX || item[0] > maxX) {
+          maxX = item[0];
+        }
+        if (!maxY || item[1] > maxY) {
+          maxY = item[1];
+        }
+      })
+    };
+
+    option = {
+      bmap: {
+        center: [121.788645, 31.077],
+        zoom: 11,
+        roam: true,
+        mapStyle: {
+          'styleJson': [{
+              'featureType': 'water',
+              'elementType': 'all',
+              'stylers': {
+                'color': '#031628'
+              }
+            },
+            {
+              'featureType': 'land',
+              'elementType': 'geometry',
+              'stylers': {
+                'color': '#000102'
+              }
+            },
+            {
+              'featureType': 'highway',
+              'elementType': 'all',
+              'stylers': {
+                'visibility': 'off'
+              }
+            },
+            {
+              'featureType': 'arterial',
+              'elementType': 'geometry.fill',
+              'stylers': {
+                'color': '#000000'
+              }
+            },
+            {
+              'featureType': 'arterial',
+              'elementType': 'geometry.stroke',
+              'stylers': {
+                'color': '#0b3d51'
+              }
+            },
+            {
+              'featureType': 'local',
+              'elementType': 'geometry',
+              'stylers': {
+                'color': '#000000'
+              }
+            },
+            {
+              'featureType': 'railway',
+              'elementType': 'geometry.fill',
+              'stylers': {
+                'color': '#000000'
+              }
+            },
+            {
+              'featureType': 'railway',
+              'elementType': 'geometry.stroke',
+              'stylers': {
+                'color': '#08304b'
+              }
+            },
+            {
+              'featureType': 'subway',
+              'elementType': 'geometry',
+              'stylers': {
+                'lightness': -70
+              }
+            },
+            {
+              'featureType': 'building',
+              'elementType': 'geometry.fill',
+              'stylers': {
+                'color': '#000000'
+              }
+            },
+            {
+              'featureType': 'all',
+              'elementType': 'labels.text.fill',
+              'stylers': {
+                'color': '#857f7f'
+              }
+            },
+            {
+              'featureType': 'all',
+              'elementType': 'labels.text.stroke',
+              'stylers': {
+                'color': '#000000'
+              }
+            },
+            {
+              'featureType': 'building',
+              'elementType': 'geometry',
+              'stylers': {
+                'color': '#022338'
+              }
+            },
+            {
+              'featureType': 'green',
+              'elementType': 'geometry',
+              'stylers': {
+                'color': '#062032'
+              }
+            },
+            {
+              'featureType': 'boundary',
+              'elementType': 'all',
+              'stylers': {
+                'color': '#465b6c'
+              }
+            },
+            {
+              'featureType': 'manmade',
+              'elementType': 'all',
+              'stylers': {
+                'color': '#022338'
+              }
+            },
+            {
+              'featureType': 'label',
+              'elementType': 'all',
+              'stylers': {
+                'visibility': 'off'
+              }
+            }
+          ]
+        }
+      },
+      series: [{
+        type: 'lines',
+        coordinateSystem: 'bmap',
+        polyline: true,
+        data: [],
+        silent: true,
+        lineStyle: {
+          normal: {
+            color: 'orange',
+            opacity: 0.3,
+            width: 1
+          }
+        },
+        progressiveThreshold: 500,
+        progressive: 200
+      }]
+    }
+
+    myChart.setOption(option, true);
+
+    // var CHUNK_COUNT = 1;
+    var CHUNK_COUNT = busData.length;
+    fetchData(0)
+
+    function fetchData(idx) {
+      if (idx >= CHUNK_COUNT) return;
+      
+      $.get(`data/bus${busData[idx]}.json`, function (data) {
+        var trackData = data.filter(function (item) {
+          if (item.lon === 0 || item.lat === 0) {
+            return false;
+          } else {
+            // debugger
+            // item.lon = (item.lon * 1000000 - 11018) / 1000000;
+            // item.lat = (item.lat * 1000000 - 3691) / 1000000;
+            return inSH(item.lon, item.lat);
+          }
+        });
+
+        if (trackData.length == 0) return;
+
+        var oldUpdownflag = trackData[0].updownflag;
+        var trackItem = [],
+          busLines = [];
+
+        for (var i = 0; i < trackData.length; i++) {
+          // 换向重排
+          if (oldUpdownflag !== trackData[i].updownflag) {
+            // 线至少两个点
+            if (trackItem.length > 1) {
+              busLines.push({
+                coords: trackItem
+              });
+            }
+
+            trackItem = [];
+            oldUpdownflag = trackData[i].updownflag;
+          } else {
+            trackItem.push([trackData[i].lon, trackData[i].lat]);
+          }
+        };
+
+        myChart.appendData({
+          seriesIndex: 0,
+          data: busLines
+        });
+
+        fetchData(idx + 1);
+      });
+    }
+
+    var minX, minY, maxX, maxY;
+
+    
+    // 是否在上海
+    function inSH(lon, lat) {
+      var isLon = lon >= 121.435067 && lon <= 121.992735;
+      var isLat = lat <= 31.393763 && lat >= 30.84174;
+      return isLon && isLat;
+    }
+
+    // 是否在浦东
+    // function inSH(lon, lat) {
+    //   var isLon = lon >= minX && lon <= maxX;
+    //   var isLat = lat >= minY && lat <= maxY;
+    //   // 在包围和中
+    //   if (isLon && isLat) {
+    //     var flag = false;
+    //     for (var i = 0, l = pudong.length, j = l - 1; i < l; j = i, i++) {
+    //       var sx = pudong[i][0],
+    //         sy = pudong[i][1],
+    //         tx = pudong[j][0],
+    //         ty = pudong[j][1]
+    //       // 点与多边形顶点重合
+    //       if ((sx === lon && sy === lat) || (tx === lon && ty === lat)) {
+    //         flag = true;
+    //         break;
+    //       }
+    //       // 判断线段两端点是否在射线两侧
+    //       if ((sy < lat && ty >= lat) || (sy >= lat && ty < lat)) {
+    //         // 线段上与射线 Y 坐标相同的点的 X 坐标
+    //         var x = sx + (lat - sy) * (tx - sx) / (ty - sy)
+    //         // 点在多边形的边上
+    //         if (x === lon) {
+    //           flag = true;
+    //           break;
+    //         }
+    //         // 射线穿过多边形的边界
+    //         if (x > lon) {
+    //           flag = !flag
+    //         }
+    //       }
+    //     }
+    //     // 射线穿过多边形边界的次数为奇数时点在多边形内
+    //     return flag;
+    //   } else {
+    //     return false;
+    //   }
+    // }
+  </script>
+</body>
+
+</html>

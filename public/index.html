@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <title>时间地图</title>
+  <style>
+    *{
+      margin: 0;
+    }
+    html,body,#app{
+      width: 100%;
+      height: 100%;
+    }
+    .anchorBL{
+      display: none;
+    }
+    #container{
+      width: 100%;
+      height: 100%;
+    }
+    .block{
+      width: 360px;
+      position: absolute;
+      top: 10px;
+      right: 30px;
+      z-index: 100;
+    }
+    .slider-block{
+      width: 260px;
+      height: 40px;
+    }
+    .time-show{
+      width: 260px;
+      text-align: center;
+      color: #fff;
+    }
+    .time-block{
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="block">
+      <div class="time-show">{{FstartTime}} - {{FendTime}}</div>
+      <div class="time-block">
+        <div class="slider-block">
+          <el-slider v-model="sliderVal" range show-stops :min="0" :format-tooltip="formatTooltip" :max="CHUNK_COUNT"
+            @change="selectTime">
+          </el-slider>
+        </div>
+        <div>
+          <el-button type="primary" @click="query" icon="el-icon-search" circle></el-button>
+        </div>
+      </div>
+    </div>
+    <div id="container"></div>
+  </div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+<script src="./js/jQuery.js"></script>
+<script src="./js/bus.js"></script>
+<script src="./js/echarts.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: function () {
+      return {
+        myChart: null,
+        timeInterval: 5, // 时间间隔 （分钟）
+        CHUNK_COUNT: 24 * 60 / 5, // 时间分割数 
+        sliderVal: [0, 0],
+        limit: 0, // 请求数据最大限制
+        chartOption: null, // chart配置
+        FstartTime: '00:00',
+        FendTime: '00:00',
+      }
+    },
+    created: function () {},
+    mounted: function () {
+      this.initChart();
+    },
+    methods: {
+      // 初始化echart
+      initChart: function () {
+        var myChart = this.myChart = echarts.init(document.getElementById("container"));
+
+        var option = this.chartOption = {
+          bmap: {
+            center: [121.788645, 31.077],
+            zoom: 11,
+            roam: true,
+            mapStyle: {
+              'styleJson': [{
+                  'featureType': 'water',
+                  'elementType': 'all',
+                  'stylers': {
+                    'color': '#031628'
+                  }
+                },
+                {
+                  'featureType': 'land',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'color': '#000102'
+                  }
+                },
+                {
+                  'featureType': 'highway',
+                  'elementType': 'all',
+                  'stylers': {
+                    'visibility': 'off'
+                  }
+                },
+                {
+                  'featureType': 'arterial',
+                  'elementType': 'geometry.fill',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'arterial',
+                  'elementType': 'geometry.stroke',
+                  'stylers': {
+                    'color': '#0b3d51'
+                  }
+                },
+                {
+                  'featureType': 'local',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'railway',
+                  'elementType': 'geometry.fill',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'railway',
+                  'elementType': 'geometry.stroke',
+                  'stylers': {
+                    'color': '#08304b'
+                  }
+                },
+                {
+                  'featureType': 'subway',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'lightness': -70
+                  }
+                },
+                {
+                  'featureType': 'building',
+                  'elementType': 'geometry.fill',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'all',
+                  'elementType': 'labels.text.fill',
+                  'stylers': {
+                    'color': '#857f7f'
+                  }
+                },
+                {
+                  'featureType': 'all',
+                  'elementType': 'labels.text.stroke',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'building',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'color': '#022338'
+                  }
+                },
+                {
+                  'featureType': 'green',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'color': '#062032'
+                  }
+                },
+                {
+                  'featureType': 'boundary',
+                  'elementType': 'all',
+                  'stylers': {
+                    'color': '#465b6c'
+                  }
+                },
+                {
+                  'featureType': 'manmade',
+                  'elementType': 'all',
+                  'stylers': {
+                    'color': '#022338'
+                  }
+                },
+                {
+                  'featureType': 'label',
+                  'elementType': 'all',
+                  'stylers': {
+                    'visibility': 'off'
+                  }
+                }
+              ]
+            }
+          },
+          series: [{
+            type: 'lines',
+            coordinateSystem: 'bmap',
+            polyline: true,
+            data: [],
+            silent: true,
+            lineStyle: {
+              normal: {
+                color: 'orange',
+                opacity: 0.3,
+                width: 1
+              }
+            },
+            // effect: {
+            //     constantSpeed: 20,
+            //     show: true,
+            //     trailLength: 0.1,
+            //     symbolSize: 3,
+            //     loop: false
+            // },
+            progressiveThreshold: 500,
+            progressive: 200
+          }]
+        }
+
+        myChart.setOption(option, true);
+      },
+      // 获取轨迹信息
+      fetchData: function (idx) {
+        if (idx > this.limit) return;
+        var _this = this;
+
+        $.get(`timeDate/time${idx + 1}.json`, function (data) {
+          var busData = {};
+          // 按车归类
+          data.forEach(function (item) {
+            if (!busData[item.bus_id]) {
+              busData[item.bus_id] = [];
+            }
+            busData[item.bus_id].push(item);
+          });
+          // 车辆路线
+          var busArr, busLines;
+          for (busArr in busData) {
+            // 每辆车路线
+            busLines = [];
+            busData[busArr].forEach(function (item) {
+              if (_this.inPuDong(item.lon, item.lat)) {
+                busLines.push([item.lon, item.lat])
+              }
+            });
+            // 至少两点成线
+            if (busLines.length > 1) {
+              _this.myChart.appendData({
+                seriesIndex: 0,
+                data: [{
+                  coords: busLines
+                }]
+              });
+            };
+          };
+
+          _this.fetchData(idx + 1);
+        });
+      },
+
+      // 是否在浦东区域
+      inPuDong: function (lon, lat) {
+        var isLon = lon >= 121.435067 && lon <= 121.992735;
+        var isLat = lat <= 31.393763 && lat >= 30.84174;
+        return isLon && isLat;
+      },
+      // 查询
+      query: function () {
+        let val = this.sliderVal;
+        this.myChart.setOption(this.chartOption);
+        this.limit = val[1];
+        this.fetchData(val[0]);
+      },
+      // 调整时间
+      selectTime: function (val) {
+        this.FstartTime = this.formetTime(val[0]);
+        this.FendTime = this.formetTime(val[1]);
+      },
+      // 格式化滑块显示
+      formatTooltip: function (val) {
+        return this.formetTime(val)
+      },
+      // 格式时间显示
+      formetTime: function (val) {
+        let hh = Math.floor(val * this.timeInterval / 60);
+        let mm = val * this.timeInterval - hh * 60;
+
+        hh = hh < 10 ? `0${hh}` : hh;
+        mm = mm < 10 ? `0${mm}` : mm;
+
+        return `${hh}:${mm}`;
+      }
+    }
+  })
+</script>
+
+</html>
